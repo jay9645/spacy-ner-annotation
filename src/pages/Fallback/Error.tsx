@@ -1,11 +1,11 @@
 import { Button, Result } from 'antd';
 import React from 'react';
 
-const NotFound: React.FC = () => (
+const Error: React.FC = () => (
   <Result
-    status="404"
-    title="404"
-    subTitle="Sorry, the page you visited does not exist."
+    status="error"
+    title="Error"
+    subTitle="Sorry, something went wrong."
     extra={
       <Button 
         type="primary"
@@ -17,4 +17,4 @@ const NotFound: React.FC = () => (
   />
 );
 
-export default NotFound;
+export default Error;
