@@ -1,38 +1,48 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Form, Input, Radio, Typography, Space } from 'antd';
 import React, { useState } from 'react';
+
+const { Title } = Typography;
+const { TextArea } = Input;
 
 type RequiredMark = boolean | 'optional';
 
 const AnnotationForm: React.FC = () => {
   const [form] = Form.useForm();
-  const [requiredMark, setRequiredMarkType] = useState<RequiredMark>('optional');
+  const [entities, setEntities] = useState(["PERSON", "LOCATION"]);
+  const [text, setText] = useState("");
+  const [annotatedEntities, setAnnotatedEntities] = useState([]);
+  const [annotatedOutput, setAnnotatedOutput] = useState([]);
+  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
 
-  const onRequiredTypeChange = ({ requiredMarkValue }: { requiredMarkValue: RequiredMark }) => {
-    setRequiredMarkType(requiredMarkValue);
+  const onFill = () => {
+    const value = form.getFieldValue("rawText");
+    console.log(value);
   };
 
   return (
     <Form
       form={form}
       layout="vertical"
-      initialValues={{ requiredMarkValue: requiredMark }}
-      onValuesChange={onRequiredTypeChange}
-      requiredMark={requiredMark}
+      initialValues={{ rawText: "", entity: "" }}
     >
-      <Form.Item label="Required Mark" name="requiredMarkValue">
-        <Radio.Group>
-          <Radio.Button value="optional">Optional</Radio.Button>
-          <Radio.Button value>Required</Radio.Button>
-          <Radio.Button value={false}>Hidden</Radio.Button>
-        </Radio.Group>
+      <Title level={3}>Input Entities</Title>
+      <Form.Item label="Raw Text" tooltip="Input the text you would like to annotate here and click on 'Add Raw Text'">
+        <TextArea rows={4} placeholder="Input raw text here" />
       </Form.Item>
-      <Form.Item label="Field A" required tooltip="This is a required field">
-        <Input placeholder="input placeholder" />
+      <Form.Item>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+          <Button htmlType="button" onClick={onFill}>
+            Fill
+          </Button>
+        </Space>
       </Form.Item>
       <Form.Item
-        label="Field B"
-        tooltip={{ title: 'Tooltip with customize icon', icon: <InfoCircleOutlined /> }}
+        label="Entity"
+        tooltip={{ title: 'Input the entity name that you would like to annotate your text with.', icon: <InfoCircleOutlined /> }}
       >
         <Input placeholder="input placeholder" />
       </Form.Item>
