@@ -27,27 +27,40 @@ const AnnotationForm: React.FC = () => {
       initialValues={{ rawText: "", entity: "" }}
     >
       <Title level={3}>Input Entities</Title>
-      <Form.Item label="Raw Text" tooltip="Input the text you would like to annotate here and click on 'Add Raw Text'">
+      <Form.Item label="Raw Text" name="rawText" tooltip="Input the text you would like to annotate here and click on 'Add Raw Text'">
         <TextArea rows={4} placeholder="Input raw text here" />
       </Form.Item>
+
       <Form.Item>
         <Space>
           <Button type="primary" htmlType="submit">
-            Submit
+            Submit Text
           </Button>
           <Button htmlType="button" onClick={onFill}>
             Fill
           </Button>
         </Space>
       </Form.Item>
+
       <Form.Item
         label="Entity"
-        tooltip={{ title: 'Input the entity name that you would like to annotate your text with.', icon: <InfoCircleOutlined /> }}
+        tooltip="'Input the entity name that you would like to annotate your text with.'"
       >
-        <Input placeholder="input placeholder" />
+        <Input placeholder="Input named entity" />
       </Form.Item>
       <Form.Item>
         <Button type="primary">Submit</Button>
+      </Form.Item>
+
+      <Form.Item>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Submit Text
+          </Button>
+          <Button htmlType="button" onClick={onFill}>
+            Fill
+          </Button>
+        </Space>
       </Form.Item>
     </Form>
   );
