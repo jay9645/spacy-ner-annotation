@@ -9,18 +9,19 @@ type RequiredMark = boolean | 'optional';
 
 const AnnotationForm: React.FC = () => {
   const [form] = Form.useForm();
-  const [entities, setEntities] = useState(["PERSON", "LOCATION"]);
+  const [entities, setEntities] = useState<string[]>([]);
   const [text, setText] = useState("");
-  const [annotatedEntities, setAnnotatedEntities] = useState([]);
-  const [annotatedOutput, setAnnotatedOutput] = useState([]);
-  const [popoverIsOpen, setPopoverIsOpen] = useState(false);
+  const [annotatedEntities, setAnnotatedEntities] = useState<string[]>([]);
+  const [annotatedOutput, setAnnotatedOutput] = useState<string[]>([]);
 
   interface EntityProps {
     value: string;
   }
 
   const EntityButton = (props: EntityProps) => {
-    return <Button>{props.value}</Button>;
+    return <Button onClick={() => onAddEntityAnnotation(props.value)}>
+      {props.value}
+    </Button>;
   }
 
   interface EntityListProps {
@@ -49,6 +50,31 @@ const AnnotationForm: React.FC = () => {
     form.setFieldValue("entity", "");
   }
 
+  const onAddEntityAnnotation = (entityName: string) => {
+    const selection = window.getSelection();
+    const selEnd1 = selection!.anchorOffset;
+    const selEnd2 = selection!.focusOffset;
+    const start = Math.min(selEnd1, selEnd2);
+    const end = Math.max(selEnd1, selEnd2);
+    const annotation = `(${start},${end},"${entityName}")`;
+    setAnnotatedEntities(prev => [...prev, annotation]);
+  }
+
+  const onGenerateAnnotations = () => {
+    const newAnnotation = `("${text}",{"entities":[${annotatedEntities}]}),`;
+    setAnnotatedOutput(prev => [...prev, newAnnotation]);
+  };
+
+  const onDownloadOutput = () => {
+    const fileData = annotatedOutput.join('\n');
+    const blob = new Blob([fileData], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = "annotated-output.txt";
+    link.href = url;
+    link.click();
+  };
+
   return (
     <Form
       form={form}
@@ -62,11 +88,8 @@ const AnnotationForm: React.FC = () => {
 
       <Form.Item>
         <Space>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" onClick={onAddText} htmlType="submit">
             Add Text
-          </Button>
-          <Button htmlType="button" onClick={onAddText}>
-            Fill
           </Button>
         </Space>
       </Form.Item>
@@ -82,7 +105,7 @@ const AnnotationForm: React.FC = () => {
         <Button type="primary" onClick={onAddEntity}>Add Named Entity</Button>
       </Form.Item>
 
-      <Title level={3}>Annotate</Title>
+      {(entities.length > 0 || text.length > 0) && <Title level={3}>Annotate</Title>}
 
       {entities.length > 0 && <Form.Item>
         <EntityList list={entities}/>
@@ -95,8 +118,41 @@ const AnnotationForm: React.FC = () => {
       </Form.Item>}
 
       {text.length > 0 &&
-      <Form.Item label="Annotate Text" tooltip="Input the entity name that you would like to annotate your text with.">
+      <Form.Item label="Annotate Text" tooltip="To annotate, highlight the text to be annotated, then click on the button with the entity name.">
         <Paragraph><pre>{text}</pre></Paragraph>
+      </Form.Item>}
+
+      {annotatedEntities.length > 0 && <Form.Item label="Annotated Entities">
+        <Paragraph>{annotatedEntities.join('\n')}</Paragraph>
+        <Button
+          type="primary"
+          onClick={onGenerateAnnotations}
+        >
+          Generate Annotation
+        </Button>
+        <Button
+          type="ghost"
+          onClick={() => setAnnotatedEntities([])}
+          className="button"
+        >
+          Clear Annotated Entities
+        </Button>
+      </Form.Item>}
+
+      {annotatedOutput.length > 0 && <Form.Item>
+        <Title level={3}>Annotated Output</Title>
+        <Paragraph>{annotatedOutput.join('\n')}</Paragraph>
+        <Button
+          type="primary"
+          onClick={onDownloadOutput}
+        >
+          Download Output
+        </Button>
+        <Button
+          onClick={() => setAnnotatedOutput([])}
+        >
+          Clear Annotated Output
+        </Button>
       </Form.Item>}
     </Form>
   );
