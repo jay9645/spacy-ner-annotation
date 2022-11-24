@@ -9,12 +9,7 @@ const Router = () => {
   return (
     <Suspense fallback={<Spin size="large" />}>
       <Routes>
-        <Route
-          path={'/annotation'}
-          element={
-            <Annotation />
-          }
-        />
+        <Route path={'/annotation'} element={<Annotation />}/>
         <Route path={'/notFound'} element={<NotFound />} />
         <Route path={'/*'} element={<NotFound />} />
         <Route path={'/'} element={<Navigate to={'/annotation'} />} />
