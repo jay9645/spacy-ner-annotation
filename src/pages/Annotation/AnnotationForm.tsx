@@ -1,11 +1,8 @@
-import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Radio, Typography, Space } from 'antd';
+import { Button, Form, Input, Typography, Space } from 'antd';
 import React, { useState } from 'react';
 
 const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
-
-type RequiredMark = boolean | 'optional';
 
 const AnnotationForm: React.FC = () => {
   const [form] = Form.useForm();
