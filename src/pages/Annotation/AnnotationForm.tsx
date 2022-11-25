@@ -27,12 +27,14 @@ const AnnotationForm: React.FC = () => {
 
   const EntityList = (props: EntityListProps) => {
     const list = props.list;
-    return <>{list.map((entity) =>
+    return <>
+    {list.map((entity) =>
       <EntityButton 
         key={entity}
         value={entity} 
       />
-    )}</>;
+    )}
+    </>;
   }
 
   const onAddText = () => {
